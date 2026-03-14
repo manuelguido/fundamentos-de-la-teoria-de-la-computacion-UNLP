@@ -98,20 +98,42 @@ Dos MT son equivalentes cuando reconocen el mismo lenguaje. Dos modelos de MT so
 
 - **Dos modelos equivalentes:** Una MT determinística (MTD) de 1 cinta y una MT no determinística (MTN) de 2 cintas son modelos equivalentes porque cualquier lenguaje que reconozca una MTN puede ser reconocido por una MTD equivalente (posiblemente con más pasos).
 
+---
+
 ## Ejercicio 2. Dado el alfabeto $Ʃ = \{0, 1\}$:
 
 ### 1. Obtener el conjunto Ʃ* y el lenguaje incluido en Ʃ* con cadenas de a lo sumo 2 símbolos.
 
+$Ʃ\* = \{&lambda;, 0, 1, 00, 01, 10, 11\}$
+
 ### 2. Sea el lenguaje $L = \{0^n 1^n | n ≥ 0\}$. Obtener los lenguajes $Ʃ^* ⋂ L$, $Ʃ^* ⋃ L$ y $L^C$ respecto de $Ʃ^*$.
+
+- $Ʃ^* ⋂ L = L$
+
+- $Ʃ^* ⋃ L = Ʃ^*$
+
+- $L^C$ respecto de $Ʃ^*$ => $L^C = Ʃ^* - L = \{w \in Ʃ^* | w \notin L\}$. Es decir, el complemento de L contiene **todas las cadenas de 0s y 1s que NO tienen la forma $0^n 1^n$**.
+
+---
 
 ## Ejercicio 3. En clase se mostró una MT no determinística (MTN) que acepta las cadenas de la forma han o hbn, con n ≥ 0. Construir (describir la función de transición) una MT determinística (MTD) equivalente.
 
+---
+
 ## Ejercicio 4. Describir la idea general de una MT con varias cintas que acepte, de la manera más eficiente posible (menor cantidad de pasos), el lenguaje $L = \{a^n b^n c^n | n ≥ 0\}$.
+
+---
 
 ## Ejercicio 5. Explicar cómo una MT sin el movimiento S (el no movimiento) puede simular (ejecutar) otra que sí lo tiene.
 
+---
+
 ## Ejercicio 6. En clase se construyó una MT con 2 cintas que acepta $L = \{w | w ∈ \{a, b\}^* y w es un palíndromo\}$. Construir una MT equivalente con 1 cinta. Ayuda: la solución que vimos para aceptar el lenguaje de las cadenas $a^n b^n$, con $n ≥ 1$, puede ser un buen punto de partida.
 
+---
+
 ## Ejercicio 7. Construir una MT que calcule la resta de dos números. Ayuda: se puede considerar la idea de solución propuesta en clase.
+
+---
 
 ## Ejercicio 8. Construir una MT que genere todas las cadenas de la forma anbn, con $n ≥ 1$. Ayuda: se puede considerar la idea de solución propuesta en clase.
