@@ -128,10 +128,10 @@ Una MTD equivalente **decide en cuál rama ir basándose en el primer símbolo d
 
 1. Lee 'h'
 2. **Define la rama según el primer símbolo:**
-   - Si es 'a' → Rama A: verifica que el resto sean solo 'a's
-   - Si es 'b' → Rama B: verifica que el resto sean solo 'b's
-   - Si es Blank (cadena = solo "h") → **ACEPTA** (válido para ambas ramas con n=0)
-   - Si es otro símbolo → **RECHAZA**
+    - Si es 'a' → Rama A: verifica que el resto sean solo 'a's
+    - Si es 'b' → Rama B: verifica que el resto sean solo 'b's
+    - Si es Blank (cadena = solo "h") → **ACEPTA** (válido para ambas ramas con n=0)
+    - Si es otro símbolo → **RECHAZA**
 3. En cada rama, rechaza **inmediatamente** si encuentra cualquier otro símbolo
 
 ### Función de transición de la MTD:
@@ -188,7 +188,67 @@ Por eso el PDF dice: _"Las MTN no modelizan una computadora (haría falta un sin
 
 ## Ejercicio 4. Describir la idea general de una MT con varias cintas que acepte, de la manera más eficiente posible (menor cantidad de pasos), el lenguaje $L = \{a^n b^n c^n | n ≥ 0\}$.
 
----
+### Idea de la solución:
+
+**Estructura de cintas:**
+
+- **Cinta 1 (entrada)**: Contiene la cadena $a^n b^n c^n$
+- **Cinta 2**: Inicialmente B (blank). Escribimos 'a' cada vez que encontramos una 'a' en cinta 1
+- **Cinta 3**: Inicialmente B. Escribimos 'b' cada vez que encontramos una 'b' en cinta 1
+- **Cinta 4**: Inicialmente B. Escribimos 'c' cada vez que encontramos una 'c' en cinta 1
+
+### Algoritmo eficiente:
+
+Se hace una **única pasada simultánea** en lugar de múltiples pasadas.
+
+1. **Inicialmente**: Las cintas 2, 3, 4 contienen solo B (blanco)
+
+2. **Recorrida única**: Avanza sobre la cinta 1:
+    - Cada vez que lee una 'a': escribe 'a' en cinta 2 (avanza puntero cinta 2)
+    - Cada vez que lee una 'b': escribe 'b' en cinta 3 (avanza puntero cinta 3)
+    - Cada vez que lee una 'c': escribe 'c' en cinta 4 (avanza puntero cinta 4)
+
+3. **Verificación de orden**:
+    - Verifica que las 'a's aparezcan antes que las 'b's
+    - Las 'b's aparezcan antes que las 'c's
+    - **(Rechaza si el orden es incorrecto, ej: "aba...")**
+
+4. **Verificación de cantidad**:
+    - Cuando termina la cinta 1 (lee B), compara los contadores de las 3 cintas
+    - Si todos tienen la misma cantidad de símbolos → **ACEPTA**
+    - Si difieren → **RECHAZA**
+
+### Ejemplo con entrada "aabbcc":
+
+| Paso | Cinta 1     | Cinta 2 | Cinta 3 | Cinta 4 | Acción                                      |
+| ---- | ----------- | ------- | ------- | ------- | ------------------------------------------- |
+| 1    | **a**abbcc  | a       | B       | B       | Lee 'a', escribe 'a' en cinta 2             |
+| 2    | a**a**bbcc  | aa      | B       | B       | Lee 'a', escribe 'a' en cinta 2             |
+| 3    | aa**b**bcc  | aa      | b       | B       | Lee 'b', escribe 'b' en cinta 3             |
+| 4    | aab**b**cc  | aa      | bb      | B       | Lee 'b', escribe 'b' en cinta 3             |
+| 5    | aabb**c**c  | aa      | bb      | c       | Lee 'c', escribe 'c' en cinta 4             |
+| 6    | aabbc**c**  | aa      | bb      | cc      | Lee 'c', escribe 'c' en cinta 4             |
+| 7    | aabbcc**B** | aa      | bb      | cc      | Lee B, todas tienen 2 símbolos → **ACEPTA** |
+
+### Verificación de cantidad igual:
+
+Después de terminar la cinta 1, la MT realiza una **verificación sincronizada borrando hacia atrás**:
+
+1. Regresa a los inicios de las cintas 2, 3, 4
+2. **Borra (convierte a B) simultáneamente** un símbolo de cada cinta en cada paso
+3. Si **todas alcanzan B exactamente al mismo tiempo** → cantidades iguales → **ACEPTA**
+4. Si **alguna llega a B antes** que las otras → cantidades distintas → **RECHAZA**
+
+**Ejemplo de rechazo**: Si la entrada fuera "aaabbc":
+
+- Cinta 2: aaa (3 símbolos)
+- Cinta 3: bb (2 símbolos)
+- Cinta 4: c (1 símbolo)
+
+Al borrar sincronizadamente:
+
+- Paso 1: Cinta 2 → aa, Cinta 3 → b, Cinta 4 → B (cinta 4 llega a B primero)
+- Resultado: **RECHAZA**, porque no todas tienen igual cantidad
 
 ## Ejercicio 5. Explicar cómo una MT sin el movimiento S (el no movimiento) puede simular (ejecutar) otra que sí lo tiene.
 
