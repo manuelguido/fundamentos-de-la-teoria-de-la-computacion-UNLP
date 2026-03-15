@@ -140,19 +140,19 @@ Una MTD equivalente **decide en cuál rama ir basándose en el primer símbolo d
 
 **Transiciones:**
 
-1. $\delta(q_0, h) = (q_1, h, R)$ — Lee 'h', avanza
-2. $\delta(q_1, a) = (q_a, a, R)$ — Primer símbolo es 'a' → entra a rama A
-3. $\delta(q_1, b) = (q_b, b, R)$ — Primer símbolo es 'b' → entra a rama B
-4. $\delta(q_1, B) = (q_A, B, S)$ — Solo 'h', sin más símbolos → **ACEPTA** (es $ha^0$ o $hb^0$)
-5. $\delta(q_a, a) = (q_a, a, R)$ — Rama A: sigue leyendo 'a's
-6. $\delta(q_a, B) = (q_A, B, S)$ — Rama A: fin de cinta con solo 'a's → **ACEPTA**
-7. $\delta(q_a, b) = (q_R, b, S)$ — Rama A: encontró 'b' → **RECHAZA DIRECTO**
-8. $\delta(q_a, *) = (q_R, *, S)$ — Rama A: otro símbolo → **RECHAZA**
-9. $\delta(q_b, b) = (q_b, b, R)$ — Rama B: sigue leyendo 'b's
-10. $\delta(q_b, B) = (q_A, B, S)$ — Rama B: fin de cinta con solo 'b's → **ACEPTA**
-11. $\delta(q_b, a) = (q_R, a, S)$ — Rama B: encontró 'a' → **RECHAZA DIRECTO**
-12. $\delta(q_b, *) = (q_R, *, S)$ — Rama B: otro símbolo → **RECHAZA**
-13. $\delta(q_0, *) = (q_R, *, S)$ — No empieza con 'h' → **RECHAZA**
+1. $δ(q_0, h) = (q_1, h, R)$ — Lee 'h', avanza
+2. $δ(q_1, a) = (q_a, a, R)$ — Primer símbolo es 'a' → entra a rama A
+3. $δ(q_1, b) = (q_b, b, R)$ — Primer símbolo es 'b' → entra a rama B
+4. $δ(q_1, B) = (q_A, B, S)$ — Solo 'h', sin más símbolos → **ACEPTA** (es $ha^0$ o $hb^0$)
+5. $δ(q_a, a) = (q_a, a, R)$ — Rama A: sigue leyendo 'a's
+6. $δ(q_a, B) = (q_A, B, S)$ — Rama A: fin de cinta con solo 'a's → **ACEPTA**
+7. $δ(q_a, b) = (q_R, b, S)$ — Rama A: encontró 'b' → **RECHAZA DIRECTO**
+8. $δ(q_a, *) = (q_R, *, S)$ — Rama A: otro símbolo → **RECHAZA**
+9. $δ(q_b, b) = (q_b, b, R)$ — Rama B: sigue leyendo 'b's
+10. $δ(q_b, B) = (q_A, B, S)$ — Rama B: fin de cinta con solo 'b's → **ACEPTA**
+11. $δ(q_b, a) = (q_R, a, S)$ — Rama B: encontró 'a' → **RECHAZA DIRECTO**
+12. $δ(q_b, *) = (q_R, *, S)$ — Rama B: otro símbolo → **RECHAZA**
+13. $δ(q_0, *) = (q_R, *, S)$ — No empieza con 'h' → **RECHAZA**
 
 ### Aclaraciones a tener en cuenta sobre de este ejercicio y las MTN en general:
 
@@ -169,8 +169,8 @@ La MTN explora **ambas ramas simultáneamente** (gracias al no determinismo). La
 
 Una MTN es una máquina que puede tener **múltiples transiciones posibles** para el mismo par (estado, símbolo). Formalmente:
 
-- En MTD: $\delta(q, a) = (q', b, d)$ → **una transición única**
-- En MTN: $\Delta(q, a) = \{(q_1, b_1, d_1), (q_2, b_2, d_2), ...\}$ → **múltiples transiciones**
+- En MTD: $δ(q, a) = (q', b, d)$ → **una transición única**
+- En MTN: $δ(q, a) = \{(q_1, b_1, d_1), (q_2, b_2, d_2), ...\}$ → **múltiples transiciones**
 
 **Acepta una cadena si AL MENOS UNA rama la acepta.**
 
@@ -265,16 +265,112 @@ O equivalentemente: L seguido de R.
 
 ### Ejemplo:
 
-Si la transición original es $\delta(q, a) = (q', a, S)$ (lee 'a', escribe 'a', queda quieto), se reemplaza por dos transiciones intermedias:
+Si la transición original es $δ(q, a) = (q', a, S)$ (lee 'a', escribe 'a', queda quieto), se reemplaza por dos transiciones intermedias:
 
-- $\delta(q, a) = (q_{\text{temp}}, a, R)$ — Escribe 'a' y avanza derecha a estado temporal
-- $\delta(q_{\text{temp}}, \sigma) = (q', \sigma, L)$ — Lee cualquier símbolo $\sigma$, lo deja igual, retrocede izquierda
+- $δ(q, a) = (q_{\text{temp}}, a, R)$ — Escribe 'a' y avanza derecha a estado temporal
+- $δ(q_{\text{temp}}, \sigma) = (q', \sigma, L)$ — Lee cualquier símbolo $\sigma$, lo deja igual, retrocede izquierda
 
 De esta forma, el neto de movimientos es cero, equivalente al movimiento S original.
 
 ---
 
-## Ejercicio 6. En clase se construyó una MT con 2 cintas que acepta $L = \{w | w ∈ \{a, b\}^* y w es un palíndromo\}$. Construir una MT equivalente con 1 cinta. Ayuda: la solución que vimos para aceptar el lenguaje de las cadenas $a^n b^n$, con $n ≥ 1$, puede ser un buen punto de partida.
+## Ejercicio 6. En clase se construyó una MT con 2 cintas que acepta `L = {w | w ∈ {a, b}^* y w es un palíndromo}`. Construir una MT equivalente con 1 cinta. Ayuda: la solución que vimos para aceptar el lenguaje de las cadenas $a^n b^n$, con $n ≥ 1$, puede ser un buen punto de partida.
+
+### Idea de la solución:
+
+Adaptamos la estrategia del algoritmo para $a^n b^n$ al problema de palíndromos. La idea es:
+
+1. **Marcar símbolos desde ambos extremos**: Comparar el primer símbolo sin marcar con el último sin marcar
+2. **Verificar coincidencia**: Si coinciden, marcarlos. Si no, rechazar
+3. **Repetir**: Volver al inicio y buscar el siguiente par de símbolos
+4. **Aceptar**: Cuando no haya más símbolos sin marcar
+
+### Estructura de la MT:
+
+**Estados:**
+
+- $q_0$: Estado inicial (solo para el inicio), busca el primer símbolo sin marcar desde la izquierda
+- $q_1$: Busca el siguiente símbolo sin marcar (iteraciones posteriores)
+- $q_{D,a}$: Busca derecha, sabiendo que se marcó una 'a'
+- $q_{D,b}$: Busca derecha, sabiendo que se marcó una 'b'
+- $q_{\text{verif,a}}$: Verifica y marca el último símbolo como 'a'
+- $q_{\text{verif,b}}$: Verifica y marca el último símbolo como 'b'
+- $q_I$: Busca izquierda de vuelta al inicio para la próxima iteración
+- $q_A$: Acepta
+- $q_R$: Rechaza
+
+**Alfabeto:**
+
+- $Σ = \{a, b\}$ (entrada)
+- $Γ = \{a, b, α, β, B\}$ (cinta)
+    - $α$: marca para 'a' ya verificada
+    - $β$: marca para 'b' ya verificada
+
+### Función de transición $δ$:
+
+**Fase 0: Estado inicial (solo al inicio)**
+
+1. $δ(q_0, a) = (q_{D,a}, α, R)$ — Encontró 'a', marca, recuerda que fue 'a', va derecha
+2. $δ(q_0, b) = (q_{D,b}, β, R)$ — Encontró 'b', marca, recuerda que fue 'b', va derecha
+3. $δ(q_0, α) = (q_0, α, R)$ — Salta marcas α ya procesadas
+4. $δ(q_0, β) = (q_0, β, R)$ — Salta marcas β ya procesadas
+5. $δ(q_0, B) = (q_A, B, S)$ — No hay símbolos sin marcar → **ACEPTA**
+
+**Fase 1: Busca el siguiente símbolo sin marcar (iteraciones posteriores)**
+
+6. $δ(q_1, a) = (q_{D,a}, α, R)$ — Encontró 'a', marca, recuerda que fue 'a', va derecha
+7. $δ(q_1, b) = (q_{D,b}, β, R)$ — Encontró 'b', marca, recuerda que fue 'b', va derecha
+8. $δ(q_1, α) = (q_1, α, R)$ — Salta marcas α ya procesadas
+9. $δ(q_1, β) = (q_1, β, R)$ — Salta marcas β ya procesadas
+10. $δ(q_1, B) = (q_A, B, S)$ — No hay símbolos sin marcar → **ACEPTA**
+
+**Fase 2: Busca derecha hacia el final (Estado $q_{D,a}$ cuando se marcó 'a')**
+
+11. $δ(q_{D,a}, a) = (q_{D,a}, a, R)$ — Continúa derecha
+12. $δ(q_{D,a}, b) = (q_{D,a}, b, R)$ — Continúa derecha
+13. $δ(q_{D,a}, α) = (q_{D,a}, α, R)$ — Salta marcas
+14. $δ(q_{D,a}, β) = (q_{D,a}, β, R)$ — Salta marcas
+15. $δ(q_{D,a}, B) = (q_{\text{verif,a}}, B, L)$ — Encontró el final, retrocede a verificar como 'a'
+
+**Fase 2b: Busca derecha hacia el final (Estado $q_{D,b}$ cuando se marcó 'b')**
+
+16. $δ(q_{D,b}, a) = (q_{D,b}, a, R)$ — Continúa derecha
+17. $δ(q_{D,b}, b) = (q_{D,b}, b, R)$ — Continúa derecha
+18. $δ(q_{D,b}, α) = (q_{D,b}, α, R)$ — Salta marcas
+19. $δ(q_{D,b}, β) = (q_{D,b}, β, R)$ — Salta marcas
+20. $δ(q_{D,b}, B) = (q_{\text{verif,b}}, B, L)$ — Encontró el final, retrocede a verificar como 'b'
+
+**Fase 3: Verifica y marca el último símbolo (esperando 'a')**
+
+21. $δ(q_{\text{verif,a}}, a) = (q_I, α, L)$ — Último es 'a', marcado como α → **COINCIDE** → busca izquierda
+22. $δ(q_{\text{verif,a}}, b) = (q_R, b, R)$ — Último es 'b' pero esperaba 'a' → **RECHAZA**
+23. $δ(q_{\text{verif,a}}, α) = (q_{\text{verif,a}}, α, L)$ — Ya marcado, sigue izquierda
+24. $δ(q_{\text{verif,a}}, β) = (q_{\text{verif,a}}, β, L)$ — Ya marcado, sigue izquierda
+
+**Fase 3b: Verifica y marca el último símbolo (esperando 'b')**
+
+25. $δ(q_{\text{verif,b}}, b) = (q_I, β, L)$ — Último es 'b', marcado como β → **COINCIDE** → busca izquierda
+26. $δ(q_{\text{verif,b}}, a) = (q_R, a, R)$ — Último es 'a' pero esperaba 'b' → **RECHAZA**
+27. $δ(q_{\text{verif,b}}, α) = (q_{\text{verif,b}}, α, L)$ — Ya marcado, sigue izquierda
+28. $δ(q_{\text{verif,b}}, β) = (q_{\text{verif,b}}, β, L)$ — Ya marcado, sigue izquierda
+
+**Fase 4: Busca izquierda de vuelta al inicio para la próxima iteración**
+
+29. $δ(q_I, a) = (q_I, a, L)$ — Busca izquierda
+30. $δ(q_I, b) = (q_I, b, L)$ — Busca izquierda
+31. $δ(q_I, α) = (q_I, α, L)$ — Salta marcas α
+32. $δ(q_I, β) = (q_I, β, L)$ — Salta marcas β
+33. $δ(q_I, B) = (q_1, B, R)$ — Llegó al inicio, va a $q_1$ para buscar el siguiente par
+
+### Aclaraciones:
+
+Este algoritmo funciona porque:
+
+- **Verifica parejas**: Compara el símbolo más a la izquierda sin marcar con el más a la derecha sin marcar
+- **Marca ambos**: Si coinciden, marca ambos y continúa
+- **Rechaza si falla**: Si no coinciden en alguna pareja, rechaza inmediatamente
+- **Termina correctamente**: Solo acepta si todas las parejas coinciden (palíndromo válido).
+- **No es el algoritmo mas eficiente**: Por simplicidad elegi hacer que el algoritmo siempre busque los blancos de los extremos, pero cuanto a mayor longitud del palíndromo mayor son los movimientos innecesarios de la maquina llendo a buscar los blancos.
 
 ---
 
