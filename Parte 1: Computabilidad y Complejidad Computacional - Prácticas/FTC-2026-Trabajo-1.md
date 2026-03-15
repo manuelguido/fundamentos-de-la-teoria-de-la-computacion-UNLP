@@ -376,6 +376,131 @@ Este algoritmo funciona porque:
 
 ## Ejercicio 7. Construir una MT que calcule la resta de dos números. Ayuda: se puede considerar la idea de solución propuesta en clase.
 
+### Idea de la solución:
+
+Adaptamos el algoritmo basado en marcación para resolver la resta $m - n$ en representación **unaria**:
+
+- **Entrada**: Dos números separados por un símbolo separador (usamos `sep`): cadena de 1s, separador, cadena de 1s
+- **Salida**: El resultado es lo que queda sin marcar en el minuendo
+- **Algoritmo**: Por cada símbolo del sustraendo, marcamos un símbolo del minuendo
+- **Casos especiales**:
+    - Si $m ≥ n$: La resta produce $m - n$ (cantidad de 1s sin marcar)
+    - Si $m < n$: La operación sería negativa; rechazamos
+
+### Estructura de la MT:
+
+**Estados:**
+
+- $q_0$: Estado inicial, marca el primer símbolo del minuendo
+- $q_D$: Busca derecha hacia el separador y luego hacia un símbolo del sustraendo
+- $q_{msust}$: Marca un símbolo del sustraendo
+- $q_I$: Busca izquierda de vuelta al minuendo
+- $q_{limp}$: Borra el separador y toda la parte del sustraendo
+- $q_A$: Acepta
+- $q_R$: Rechaza
+
+**Alfabeto:**
+
+- $Σ = \{1, \text{sep}\}$ (entrada)
+- $Γ = \{1, \text{sep}, \α, B\}$ (cinta)
+    - $α$: marca para 1 ya procesado
+    - $B$: blanco
+
+### Función de transición $\delta$:
+
+**Fase 1: Marca el primer símbolo del minuendo**
+
+1. $\delta(q_0, 1) = (q_D, α, R)$ — Marca un 1 del minuendo, busca hacia el separador
+2. $\delta(q_0, α) = (q_0, α, R)$ — Salta marcas previas
+3. $\delta(q_0, \text{sep}) = (q_{limp}, B, R)$ — No hay más 1s en minuendo, limpia sustraendo
+4. $\delta(q_0, B) = (q_A, B, S)$ — Minuendo vacío, resultado es 0 → **ACEPTA**
+
+**Fase 2: Busca derecha hacia el separador y luego un símbolo del sustraendo**
+
+5. $\delta(q_D, 1) = (q_D, 1, R)$ — Continúa derecha (puede ser minuendo o sustraendo)
+6. $\delta(q_D, α) = (q_D, α, R)$ — Salta marcas
+7. $\delta(q_D, \text{sep}) = (q_D, \text{sep}, R)$ — Encontró separador, continúa derecha
+8. $\delta(q_D, B) = (q_{limp}, B, L)$ — Sin 1s en sustraendo → limpia
+
+**Fase 3: Marca un símbolo del sustraendo y vuelve**
+
+9. $\delta(q_D, 1) = (q_{msust}, α, L)$ — Encontró 1 en sustraendo, marca, va izquierda
+10. $\delta(q_{msust}, \text{sep}) = (q_{msust}, \text{sep}, L)$ — Busca izquierda pasando separador
+11. $\delta(q_{msust}, 1) = (q_I, 1, L)$ — Encontró 1 sin marcar en minuendo
+12. $\delta(q_{msust}, α) = (q_{msust}, α, L)$ — Salta marcas
+
+**Fase 4: Busca izquierda el siguiente 1 sin marcar en el minuendo**
+
+13. $\delta(q_I, α) = (q_I, α, L)$ — Salta marcas izquierda
+14. $\delta(q_I, B) = (q_0, B, R)$ — Llegó al inicio, busca siguiente 1
+
+**Fase 5: Limpia el separador y el sustraendo**
+
+15. $\delta(q_{limp}, \text{sep}) = (q_{limp}, B, R)$ — Borra separador
+16. $\delta(q_{limp}, 1) = (q_{limp}, B, R)$ — Borra 1s del sustraendo
+17. $\delta(q_{limp}, α) = (q_{limp}, α, L)$ — Es marcado, salta
+18. $\delta(q_{limp}, B) = (q_A, B, L)$ — Terminó limpieza → **ACEPTA**
+
+### Ejemplo de ejecución con entrada `111-11` (3 - 2 = 1):
+
+| Paso      | Cinta                 | Estado      | Acción                             |
+| --------- | --------------------- | ----------- | ---------------------------------- |
+| 1         | **1**11-11            | $q_0$       | Marca 1, va derecha                |
+| 2         | $α$**1**1-11          | $q_D$       | Busca derecha                      |
+| 3         | $α$1**1**-11          | $q_D$       | Busca derecha                      |
+| 4         | $α$11**-**11          | $q_D$       | Encontró separador, continúa       |
+| 5         | $α$11-**1**1          | $q_D$       | Encontró 1 en sustraendo, marca    |
+| 6         | $α$11-$α$**1**        | $q_{msust}$ | Busca izquierda                    |
+| 7         | $α$11**-**$α$1        | $q_{msust}$ | Pasó separador                     |
+| 8         | $α$1**1**-$α$1        | $q_{msust}$ | Encontró 1 sin marcar              |
+| 9         | $α$**1**1-$α$1        | $q_I$       | Busca izquierda                    |
+| 10        | **$α$**11-$α$1        | $q_I$       | Vuelve al inicio                   |
+| 11        | $α$**1**1-$α$1        | $q_0$       | Marca 2do 1                        |
+| 12        | $α$$α$**1**-$α$1      | $q_D$       | Continúa derecha                   |
+| 13        | $α$$α$1**-**$α$1      | $q_D$       | Encontró separador                 |
+| 14        | $α$$α$1-**$α$\*\*1    | $q_D$       | Lee marcado, continúa              |
+| 15        | $α$$α$1-$α$**1**      | $q_D$       | Encontró 1 en sustraendo           |
+| 16        | $α$$α$1-$α$$α$        | $q_{limp}$  | No hay más 1s, limpia              |
+| 17        | $α$$α$1**B**$α$$α$    | $q_{limp}$  | Borra separador                    |
+| 18        | $α$$α$1**B\*\***B\*\* | $q_{limp}$  | Borra 1s del sustraendo            |
+| 19        | $α$$α$1**B**          | $q_A$       | **ACEPTA**                         |
+| Resultado | **1** sin marcar      |             | Queda 1 símbolo = resultado es 1 ✓ |
+
+### Propiedad clave:
+
+- **Resta correcta**: Cada símbolo del sustraendo elimina un símbolo del minuendo
+- **Verifica suficiencia**: Si el minuendo se agota antes, rechaza (resultado negativo)
+- **Resultado computable**: Los 1s sin marcar representan $m - n$
+
+| Paso      | Cinta          | Estado          | Acción                                             |
+| --------- | -------------- | --------------- | -------------------------------------------------- |
+| 1         | **1**11#11     | $q_0$           | Marca 1, va derecha                                |
+| 2         | α**1**1#11     | $q_D$           | Busca derecha                                      |
+| 3         | α1**1**#11     | $q_D$           | Busca derecha                                      |
+| 4         | α11**#**11     | $q_D$           | Encontró #, continúa                               |
+| 5         | α11#**1**1     | $q_D$           | Encontró 1 en sustraendo, marca y va izquierda     |
+| 6         | α11#α**1**     | $q_{msust}$     | Busca izquierda                                    |
+| 7         | α11**#**α1     | $q_{msust}$     | Pasó #                                             |
+| 8         | α1**1**#α1     | $q_{msust}$     | Encontró 1 sin marcar                              |
+| 9         | α**1**1#α1     | $q_I$           | Busca izquierda                                    |
+| 10        | **α**11#α1     | $q_I$           | Vuelve al inicio                                   |
+| 11        | α**1**1#α1     | $q_0$           | Marca 2do 1, va derecha                            |
+| 12        | αα**1**#α1     | $q_D$           | Continúa derecha                                   |
+| 13        | αα1**#**α1     | $q_D$           | Encontró #                                         |
+| 14        | αα1#**α**1     | $q_D$           | Pasó 1 marcado, continúa                           |
+| 15        | αα1#α**1**     | $q_D$           | Encontró 1 en sustraendo, marca                    |
+| 16        | αα1#αα**B**    | $q_{msust}$     | Llegó al final, no hay más 1s en minuendo → limpia |
+| 17        | αα1**B**αα     | $q_{limp}$      | Borra #                                            |
+| 18        | αα1**B**B      | $q_{limp}$      | Borra 1s del sustraendo                            |
+| 19        | αα1**B**       | $q_A$           | **ACEPTA**                                         |
+| Resultado | $1$ sin marcar | Queda 1 símbolo | Resultado es 1 ✓                                   |
+
+### Propiedad clave:
+
+- **Resta correcta**: Cada símbolo del sustraendo elimina un símbolo del minuendo
+- **Verifica suficiencia**: Si el minuendo se agota antes que el sustraendo, se rechaza (resultado negativo)
+- **Resultado computable**: Los 1s sin marcar representan $m - n$
+
 ---
 
 ## Ejercicio 8. Construir una MT que genere todas las cadenas de la forma anbn, con $n ≥ 1$. Ayuda: se puede considerar la idea de solución propuesta en clase.
