@@ -252,6 +252,26 @@ Al borrar sincronizadamente:
 
 ## Ejercicio 5. Explicar cómo una MT sin el movimiento S (el no movimiento) puede simular (ejecutar) otra que sí lo tiene.
 
+Una MT sin el movimiento S (stay/quedarse quieto) puede simular este comportamiento **anulando el movimiento neto**:
+
+Cuando una MT con S necesita quedarse quieta en una posición, una MT sin S puede:
+
+1. **Avanzar derecha (R)** en un paso
+2. **Retroceder izquierda (L)** en el siguiente paso
+
+O equivalentemente: L seguido de R.
+
+**Resultado**: La cabeza lectora vuelve a su posición original, simulando efectivamente un movimiento S.
+
+### Ejemplo:
+
+Si la transición original es $\delta(q, a) = (q', a, S)$ (lee 'a', escribe 'a', queda quieto), se reemplaza por dos transiciones intermedias:
+
+- $\delta(q, a) = (q_{\text{temp}}, a, R)$ — Escribe 'a' y avanza derecha a estado temporal
+- $\delta(q_{\text{temp}}, \sigma) = (q', \sigma, L)$ — Lee cualquier símbolo $\sigma$, lo deja igual, retrocede izquierda
+
+De esta forma, el neto de movimientos es cero, equivalente al movimiento S original.
+
 ---
 
 ## Ejercicio 6. En clase se construyó una MT con 2 cintas que acepta $L = \{w | w ∈ \{a, b\}^* y w es un palíndromo\}$. Construir una MT equivalente con 1 cinta. Ayuda: la solución que vimos para aceptar el lenguaje de las cadenas $a^n b^n$, con $n ≥ 1$, puede ser un buen punto de partida.
