@@ -116,7 +116,73 @@ $Ʃ\* = \{&lambda;, 0, 1, 00, 01, 10, 11\}$
 
 ---
 
-## Ejercicio 3. En clase se mostró una MT no determinística (MTN) que acepta las cadenas de la forma han o hbn, con n ≥ 0. Construir (describir la función de transición) una MT determinística (MTD) equivalente.
+## Ejercicio 3. En clase se mostró una MT no determinística (MTN) que acepta las cadenas de la forma $ha^n$ o $hb^n$, con $n ≥ 0$. Construir (describir la función de transición) una MT determinística (MTD) equivalente.
+
+### Ejemplo de la clase:
+
+![Imagen de MT no determinística (MTN) que acepta las cadenas de la forma ha^n o hb^n, con n ≥ 0.](../imágenes/práctica-01/imagen-01.png)
+
+### Idea de la solución:
+
+Una MTD equivalente **decide en cuál rama ir basándose en el primer símbolo después de 'h'**:
+
+1. Lee 'h'
+2. **Define la rama según el primer símbolo:**
+   - Si es 'a' → Rama A: verifica que el resto sean solo 'a's
+   - Si es 'b' → Rama B: verifica que el resto sean solo 'b's
+   - Si es Blank (cadena = solo "h") → **ACEPTA** (válido para ambas ramas con n=0)
+   - Si es otro símbolo → **RECHAZA**
+3. En cada rama, rechaza **inmediatamente** si encuentra cualquier otro símbolo
+
+### Función de transición de la MTD:
+
+**Estados:** $q_0$ (inicial), $q_1$ (después de leer h), $q_a$ (rama a), $q_b$ (rama b), $q_A$ (aceptación), $q_R$ (rechazo)
+
+**Transiciones:**
+
+1. $\delta(q_0, h) = (q_1, h, R)$ — Lee 'h', avanza
+2. $\delta(q_1, a) = (q_a, a, R)$ — Primer símbolo es 'a' → entra a rama A
+3. $\delta(q_1, b) = (q_b, b, R)$ — Primer símbolo es 'b' → entra a rama B
+4. $\delta(q_1, B) = (q_A, B, S)$ — Solo 'h', sin más símbolos → **ACEPTA** (es $ha^0$ o $hb^0$)
+5. $\delta(q_a, a) = (q_a, a, R)$ — Rama A: sigue leyendo 'a's
+6. $\delta(q_a, B) = (q_A, B, S)$ — Rama A: fin de cinta con solo 'a's → **ACEPTA**
+7. $\delta(q_a, b) = (q_R, b, S)$ — Rama A: encontró 'b' → **RECHAZA DIRECTO**
+8. $\delta(q_a, *) = (q_R, *, S)$ — Rama A: otro símbolo → **RECHAZA**
+9. $\delta(q_b, b) = (q_b, b, R)$ — Rama B: sigue leyendo 'b's
+10. $\delta(q_b, B) = (q_A, B, S)$ — Rama B: fin de cinta con solo 'b's → **ACEPTA**
+11. $\delta(q_b, a) = (q_R, a, S)$ — Rama B: encontró 'a' → **RECHAZA DIRECTO**
+12. $\delta(q_b, *) = (q_R, *, S)$ — Rama B: otro símbolo → **RECHAZA**
+13. $\delta(q_0, *) = (q_R, *, S)$ — No empieza con 'h' → **RECHAZA**
+
+### Aclaraciones a tener en cuenta sobre de este ejercicio y las MTN en general:
+
+#### Definición de una **rama** en este contexto
+
+Una **rama** es una posible computación o ejecución que la máquina puede tomar. En la MTN original, cuando llega a $q_0$ y lee 'h', puede bifurcarse en dos ramas:
+
+- **Rama A**: Va a estado $q_a$ para leer ceros o más 'a's
+- **Rama B**: Va a estado $q_b$ para leer ceros o más 'b's
+
+La MTN explora **ambas ramas simultáneamente** (gracias al no determinismo). La MTD las simula **secuencialmente**: primero rama A completa, si falla regresa y prueba rama B.
+
+#### ¿Qué es una Máquina de Turing no determinística (MTN)?
+
+Una MTN es una máquina que puede tener **múltiples transiciones posibles** para el mismo par (estado, símbolo). Formalmente:
+
+- En MTD: $\delta(q, a) = (q', b, d)$ → **una transición única**
+- En MTN: $\Delta(q, a) = \{(q_1, b_1, d_1), (q_2, b_2, d_2), ...\}$ → **múltiples transiciones**
+
+**Acepta una cadena si AL MENOS UNA rama la acepta.**
+
+#### ¿Por qué las MTN no son físicamente realizables?
+
+Porque necesitarían **procesadores paralelos infinitos**:
+
+1. La MTN explora todas las ramas **simultáneamente** (imposible en realidad)
+2. Si hay $c$ opciones en un punto, necesitarías $c$ procesadores diferentes
+3. Si hay bifurcaciones exponenciales, necesitarías $2^n$ procesadores
+
+Por eso el PDF dice: _"Las MTN no modelizan una computadora (haría falta un sinnúmero de procesadores). No son físicamente realizables. Sirven para simplificar las descripciones de las MT determinísticas."_
 
 ---
 
